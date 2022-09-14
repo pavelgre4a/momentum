@@ -27,7 +27,7 @@ setInterval(showTimeAndDate, 1000);
 
 function showGreeting() {
     const timeOfDay = getTimeOfDay();
-    const greetingText = `Good ${timeOfDay}`;
+    const greetingText = `Good ${timeOfDay},`;
     
     greetingBlock.textContent = greetingText;
 }
@@ -114,20 +114,10 @@ const temperature = document.querySelector('.temperature');
 const weatherDescription = document.querySelector('.weather-description');
 const city = document.querySelector('.city');
 
-// function setCityLocalStorage() {
-//     localStorage.setItem('city', city.value);
-// }
-// window.addEventListener('beforeunload', setCityLocalStorage);
-
-// function getCityLocalStorage() {
-//     if (localStorage.getItem('city')) {
-//         city.value = localStorage.getItem('city');
-//     }
-// }
-// window.addEventListener('load', getCityLocalStorage);
+city.value = 'Minsk';
 
 async function getWeather() {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=Minsk&lang=en&appid=f9a4ac1105e368cae44f07c5db52c935&units=metric`;
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city.value}&lang=en&appid=f9a4ac1105e368cae44f07c5db52c935&units=metric`;
     const res = await fetch(url);
     const data = await res.json();
 
@@ -135,7 +125,20 @@ async function getWeather() {
     temperature.textContent = `${data.main.temp}°C`;
     weatherDescription.textContent = data.weather[0].description;
 }
-window.addEventListener('change', getWeather());
+getWeather()
+city.addEventListener('change', getWeather);
+
+function setCityLocalStorage() {
+    localStorage.setItem('city', city.value);
+}
+window.addEventListener('beforeunload', setCityLocalStorage);
+
+function getCityLocalStorage() {
+    if (localStorage.getItem('city')) {
+        city.value = localStorage.getItem('city');
+    }
+}
+window.addEventListener('load', getCityLocalStorage);
 
 
 
