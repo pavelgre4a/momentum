@@ -141,6 +141,37 @@ function getCityLocalStorage() {
 window.addEventListener('load', getCityLocalStorage);
 
 
+// Show quotes
+
+const quote = document.querySelector('.quote');
+const author = document.querySelector('.author');
+const changeQuote = document.querySelector('.change-quote');
+let randomQuoteNum;
+
+function getRandomQuoteNum(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    randomQuoteNum = (Math.floor(Math.random() * (max - min + 1)) + min);
+}
+
+async function getQuotes() {
+    const quotes = '/momentum/assets/json_data/data.json';
+    const res = await fetch(quotes);
+    const data = await res.json();
+
+    getRandomQuoteNum('0', '9');
+    console.log(randomQuoteNum);
+
+    quote.textContent = data[randomQuoteNum]['text'];
+    author.textContent = data[randomQuoteNum]['author'];
+
+}
+getQuotes();
+
+changeQuote.addEventListener('click', getQuotes);
+
+
+
 
 
 
