@@ -219,9 +219,10 @@ audioToggleBtn.addEventListener('click', toggleAudioBtn);
 function playNext() {
     randomAudioNum += 1;
 
-    if (randomAudioNum >= 4) {
+    if (randomAudioNum >= playList.length) {
         randomAudioNum = 0;
     }
+    console.log(randomAudioNum)
     isPlay = false;
     playAudio();
 }
@@ -231,9 +232,10 @@ playNextBtn.addEventListener('click', toggleAudioBtn);
 function playPrev() {
     randomAudioNum -= 1;
 
-    if (randomAudioNum <= 0) {
-        randomAudioNum = 3;
+    if (randomAudioNum < 0) {
+        randomAudioNum = playList.length - 1;
     }
+    console.log(randomAudioNum)
     isPlay = false;
     playAudio();
 }
