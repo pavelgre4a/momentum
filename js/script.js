@@ -240,6 +240,15 @@ function playPrev() {
 playPrevBtn.addEventListener('click', playPrev);
 playPrevBtn.addEventListener('click', toggleAudioBtn);
 
+const playListContainer = document.querySelector('.play-list');
+
+playList.forEach( (elem, index) => {
+    const li = document.createElement('li');
+    playListContainer.append(li);
+    li.classList.add('play-item');
+    li.textContent = playList[index].title;
+})
+
 
 
 
