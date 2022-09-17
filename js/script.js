@@ -41,7 +41,7 @@ function getTimeOfDay() {
     } else if (hours >= 6 && hours < 12) {
         return 'morning';
     } else if (hours >= 12 && hours < 18) {
-        return 'day';
+        return 'afternoon';
     } else if (hours >= 18 && hours < 24) {
         return 'evening';
     }
@@ -114,6 +114,11 @@ const temperature = document.querySelector('.temperature');
 const weatherDescription = document.querySelector('.weather-description');
 const city = document.querySelector('.city');
 
+// function setDefaultCity() {
+//     localStorage.setItem('city', 'Minsk');
+// }
+// setDefaultCity();
+
 city.value = 'Minsk';
 
 async function getWeather() {
@@ -160,15 +165,84 @@ async function getQuotes() {
     const data = await res.json();
 
     getRandomQuoteNum('0', '9');
-    console.log(randomQuoteNum);
 
     quote.textContent = data[randomQuoteNum]['text'];
     author.textContent = data[randomQuoteNum]['author'];
-
 }
 getQuotes();
 
 changeQuote.addEventListener('click', getQuotes);
+
+
+// Audioplayer widget
+
+import playList from './playList.js';
+console.log(playList[1].src);
+
+let isPlay = false;
+let randomAudioNum;
+const audioToggleBtn = document.querySelector('.play');
+const playNextBtn = document.querySelector('.play-next');
+const playPrevBtn = document.querySelector('.play-prev');
+const audio = new Audio();
+
+function getRandomAudioNum(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    randomAudioNum = (Math.floor(Math.random() * (max - min + 1)) + min);
+}
+getRandomAudioNum(0, playList.length);
+
+function playAudio() {
+    audio.src = `${playList[randomAudioNum].src}`;
+    // audio.currentTime = 0;
+
+    if (!isPlay) {
+        audio.play();
+        isPlay = true;
+    } else {
+        audio.pause();
+        isPlay = false;
+    }
+}
+audioToggleBtn.addEventListener('click', playAudio);
+
+function toggleAudioBtn() {
+    if (!isPlay) {
+        audioToggleBtn.classList.remove('pause');
+    } else {
+        audioToggleBtn.classList.add('pause');
+    }
+}
+audioToggleBtn.addEventListener('click', toggleAudioBtn);
+
+function playNext() {
+    randomAudioNum += 1;
+
+    if (randomAudioNum >= 4) {
+        randomAudioNum = 0;
+    }
+    isPlay = false;
+    playAudio();
+}
+playNextBtn.addEventListener('click', playNext);
+playNextBtn.addEventListener('click', toggleAudioBtn);
+
+function playPrev() {
+    randomAudioNum -= 1;
+
+    if (randomAudioNum <= 0) {
+        randomAudioNum = 3;
+    }
+    isPlay = false;
+    playAudio();
+}
+playPrevBtn.addEventListener('click', playPrev);
+playPrevBtn.addEventListener('click', toggleAudioBtn);
+
+
+
+
 
 
 
