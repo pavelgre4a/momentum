@@ -222,7 +222,6 @@ function playNext() {
     if (randomAudioNum >= playList.length) {
         randomAudioNum = 0;
     }
-    console.log(randomAudioNum)
     isPlay = false;
     playAudio();
 }
@@ -235,7 +234,6 @@ function playPrev() {
     if (randomAudioNum < 0) {
         randomAudioNum = playList.length - 1;
     }
-    console.log(randomAudioNum)
     isPlay = false;
     playAudio();
 }
