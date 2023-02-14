@@ -118,6 +118,22 @@ body {
   background-image: url("../assets/svg/play-next.svg");
 }
 
+.languages {
+  display: flex;
+  gap: 20px;
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.languages-item {
+  color: cornflowerblue;
+}
+
+.languages-item-active {
+  color: brown;
+}
+
 .weather {
   display: flex;
   flex-direction: column;

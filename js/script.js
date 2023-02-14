@@ -1,260 +1,270 @@
+// Translation feature
+
+import appTranslation from "./appTranslation.js";
+const russianBtn = document.querySelector(".languages-item-ru");
+const englishBtn = document.querySelector(".languages-item-en");
+let defaultLang = "en";
+
+function setRussianLang() {
+  russianBtn.classList.add('languages-item-active');
+  englishBtn.classList.remove('languages-item-active');
+  defaultLang = 'ru';
+  setTimeout(getWeather, 1000, defaultLang);
+}
+russianBtn.addEventListener('click', setRussianLang);
+
+function setEnglishLang() {
+  englishBtn.classList.add('languages-item-active');
+  russianBtn.classList.remove('languages-item-active');
+  defaultLang = 'en';
+  setTimeout(getWeather, 1000, defaultLang);
+}
+englishBtn.addEventListener('click', setEnglishLang);
+
 // Show current time and date
 
-const time = document.querySelector('.time');
-const date = document.querySelector('.date');
-const greetingBlock = document.querySelector('.greeting');
-const body = document.querySelector('body');
-const slideNext = document.querySelector('.slide-next');
-const slidePrev = document.querySelector('.slide-prev');
-let randomBgNum;
+const time = document.querySelector(".time");
 
-function showTimeAndDate() {
-    const tempDate = new Date();
-    const currentTime = tempDate.toLocaleTimeString();
-    const options = {weekday: 'long', month: 'long', day: '2-digit'};
-    const currentDate = tempDate.toLocaleDateString('en-Us', options);
+function showTime(lang) {
+  const actualTime = new Date();
+  const currentTime = actualTime.toLocaleTimeString(appTranslation.timeAndDate[lang].time.locales);
 
-    time.textContent = currentTime;
-    date.textContent = currentDate;
-    showGreeting();
+  time.textContent = currentTime;
+  setTimeout(showTime, 1000, defaultLang);
 }
-showTimeAndDate();
+showTime(defaultLang);
 
-setInterval(showTimeAndDate, 1000);
+const date = document.querySelector(".date");
 
+function showDate(lang) {
+  const actualDate = new Date();
+  const options = { weekday: "long", month: "long", day: "2-digit" };
+  const currentDate = actualDate.toLocaleDateString(appTranslation.timeAndDate[lang].date.locales, options);
+
+  date.textContent = currentDate;
+  setTimeout(showDate, 1000, defaultLang);
+}
+showDate(defaultLang);
 
 // Show and save greeting
 
-function showGreeting() {
-    const timeOfDay = getTimeOfDay();
-    const greetingText = `Good ${timeOfDay},`;
-    
-    greetingBlock.textContent = greetingText;
+const greeting = document.querySelector(".greeting");
+
+function showGreeting(lang) {
+  const timeOfDay = getTimeOfDay(lang);
+  const greetingText = `${appTranslation.greeting[lang]} ${timeOfDay},`;
+
+  greeting.textContent = greetingText;
+  setTimeout(showGreeting, 1000, defaultLang);
+}
+showGreeting(defaultLang);
+
+function getTimeOfDay(lang) {
+  const tempDate = new Date();
+  const hours = tempDate.getHours();
+
+  if (hours >= 0 && hours < 6) {
+    return `${appTranslation.dayTimes[lang].night}`;
+  } else if (hours >= 6 && hours < 12) {
+    return `${appTranslation.dayTimes[lang].morning}`;
+  } else if (hours >= 12 && hours < 18) {
+    return `${appTranslation.dayTimes[lang].afternoon}`;
+  } else if (hours >= 18 && hours < 24) {
+    return `${appTranslation.dayTimes[lang].evening}`;
+  }
 }
 
-function getTimeOfDay() {
-    const tempDate = new Date();
-    const hours = tempDate.getHours();
-
-    if (hours >= 0 && hours < 6) {
-        return 'night';
-    } else if (hours >= 6 && hours < 12) {
-        return 'morning';
-    } else if (hours >= 12 && hours < 18) {
-        return 'afternoon';
-    } else if (hours >= 18 && hours < 24) {
-        return 'evening';
-    }
-}
-
-const name = document.querySelector('.name');
+const name = document.querySelector(".name");
 
 function setLocalStorage() {
-    localStorage.setItem('name', name.value);
+  localStorage.setItem("name", name.value);
 }
-window.addEventListener('beforeunload', setLocalStorage);
+window.addEventListener("beforeunload", setLocalStorage);
 
 function getLocalStorage() {
-    if (localStorage.getItem('name')) {
-        name.value = localStorage.getItem('name');
-    }
+  if (localStorage.getItem("name")) {
+    name.value = localStorage.getItem("name");
+  }
 }
-window.addEventListener('load', getLocalStorage);
-
+window.addEventListener("load", getLocalStorage);
 
 // Background random image slider
 
+const body = document.querySelector("body");
+const slideNext = document.querySelector(".slide-next");
+const slidePrev = document.querySelector(".slide-prev");
+let randomBgNum;
+
 function getRandomNum(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    randomBgNum = (Math.floor(Math.random() * (max - min + 1)) + min);
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  randomBgNum = Math.floor(Math.random() * (max - min + 1)) + min;
 }
-getRandomNum('1', '20');
+getRandomNum("1", "20");
 
 function setBg() {
-    const timeOfDay = getTimeOfDay();
-    let bgNum = randomBgNum.toString().padStart(2, '0');
+  const timeOfDay = getTimeOfDay('en');
+  let bgNum = randomBgNum.toString().padStart(2, "0");
 
-    const img = new Image();
-    img.src = `https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${bgNum}.jpg`;
-    img.onload = () => {
-        body.style.background = 'none';
-        body.style.backgroundImage = `url(${img.src})`;
-    }
+  const img = new Image();
+  img.src = `https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${bgNum}.jpg`;
+  img.addEventListener("load", () => {
+    body.style.background = "none";
+    body.style.backgroundImage = `url(${img.src})`;
+  });
 }
 setBg();
 
 function getSildeNext() {
-    randomBgNum += 1;
+  randomBgNum += 1;
 
-    if (randomBgNum > 20) {
-        randomBgNum = 1;
-    }
+  if (randomBgNum > 20) {
+    randomBgNum = 1;
+  }
 
-    setBg();
+  setBg();
 }
-slideNext.addEventListener('click', getSildeNext);
+slideNext.addEventListener("click", getSildeNext);
 
 function getSildePrev() {
-    randomBgNum -= 1;
+  randomBgNum -= 1;
 
-    if (randomBgNum < 1) {
-        randomBgNum = 20;
-    }
+  if (randomBgNum < 1) {
+    randomBgNum = 20;
+  }
 
-    setBg();
+  setBg();
 }
-slidePrev.addEventListener('click', getSildePrev);
-
+slidePrev.addEventListener("click", getSildePrev);
 
 // Show weather
 
-const weatherIcon = document.querySelector('.weather-icon');
-const temperature = document.querySelector('.temperature');
-const weatherDescription = document.querySelector('.weather-description');
-const city = document.querySelector('.city');
+const weatherIcon = document.querySelector(".weather-icon");
+const temperature = document.querySelector(".temperature");
+const weatherDescription = document.querySelector(".weather-description");
+const city = document.querySelector(".city");
 
-// function setDefaultCity() {
-//     localStorage.setItem('city', 'Minsk');
-// }
-// setDefaultCity();
+async function getWeather(lang) {
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city.value}&lang=${lang}&appid=f9a4ac1105e368cae44f07c5db52c935&units=metric`;
+  const res = await fetch(url);
+  const data = await res.json();
 
-city.value = 'Minsk';
-
-async function getWeather() {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city.value}&lang=en&appid=f9a4ac1105e368cae44f07c5db52c935&units=metric`;
-    const res = await fetch(url);
-    const data = await res.json();
-
-    weatherIcon.classList.add(`owf-${data.weather[0].id}`);
-    temperature.textContent = `${data.main.temp}°C`;
-    weatherDescription.textContent = data.weather[0].description;
+  weatherIcon.classList.add(`owf-${data.weather[0].id}`);
+  temperature.textContent = `${data.main.temp}°C`;
+  weatherDescription.textContent = data.weather[0].description;
 }
-getWeather()
-city.addEventListener('change', getWeather);
+city.addEventListener("change", () => getWeather(defaultLang));
 
 function setCityLocalStorage() {
-    localStorage.setItem('city', city.value);
+  localStorage.setItem("city", city.value);
 }
-window.addEventListener('beforeunload', setCityLocalStorage);
+window.addEventListener("beforeunload", setCityLocalStorage);
 
 function getCityLocalStorage() {
-    if (localStorage.getItem('city')) {
-        city.value = localStorage.getItem('city');
-    }
+  if (localStorage.getItem("city")) {
+    city.value = localStorage.getItem("city");
+    getWeather(defaultLang);
+  }
 }
-window.addEventListener('load', getCityLocalStorage);
-
+window.addEventListener("load", getCityLocalStorage);
 
 // Show quotes
 
-const quote = document.querySelector('.quote');
-const author = document.querySelector('.author');
-const changeQuote = document.querySelector('.change-quote');
+const quote = document.querySelector(".quote");
+const author = document.querySelector(".author");
+const changeQuote = document.querySelector(".change-quote");
 let randomQuoteNum;
 
 function getRandomQuoteNum(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    randomQuoteNum = (Math.floor(Math.random() * (max - min + 1)) + min);
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  randomQuoteNum = Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 async function getQuotes() {
-    const quotes = '/momentum/assets/json_data/data.json';
-    const res = await fetch(quotes);
-    const data = await res.json();
+  const quotes = "../assets/json_data/data.json";
+  const res = await fetch(quotes);
+  const data = await res.json();
 
-    getRandomQuoteNum('0', '9');
+  getRandomQuoteNum("0", "9");
 
-    quote.textContent = data[randomQuoteNum]['text'];
-    author.textContent = data[randomQuoteNum]['author'];
+  quote.textContent = data[randomQuoteNum]["text"];
+  author.textContent = data[randomQuoteNum]["author"];
 }
 getQuotes();
 
-changeQuote.addEventListener('click', getQuotes);
-
+changeQuote.addEventListener("click", getQuotes);
 
 // Audioplayer widget
 
-import playList from './playList.js';
-console.log(playList[1].src);
+import playList from "./playList.js";
 
-let isPlay = false;
-let randomAudioNum;
-const audioToggleBtn = document.querySelector('.play');
-const playNextBtn = document.querySelector('.play-next');
-const playPrevBtn = document.querySelector('.play-prev');
-const audio = new Audio();
+let audioNum;
+const audioToggleBtn = document.querySelector(".play");
+const playNextBtn = document.querySelector(".play-next");
+const playPrevBtn = document.querySelector(".play-prev");
 
 function getRandomAudioNum(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    randomAudioNum = (Math.floor(Math.random() * (max - min + 1)) + min);
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  audioNum = Math.floor(Math.random() * (max - min + 1)) + min;
 }
 getRandomAudioNum(0, playList.length);
 
-function playAudio() {
-    audio.src = `${playList[randomAudioNum].src}`;
-    // audio.currentTime = 0;
+const audio = new Audio();
+let isPlay = false;
 
-    if (!isPlay) {
-        audio.play();
-        isPlay = true;
-    } else {
-        audio.pause();
-        isPlay = false;
-    }
+function playAudio() {
+  audio.src = `${playList[audioNum].src}`;
+
+  if (!isPlay) {
+    audio.play();
+    isPlay = true;
+  } else {
+    audio.pause();
+    isPlay = false;
+  }
 }
-audioToggleBtn.addEventListener('click', playAudio);
+audioToggleBtn.addEventListener("click", playAudio);
 
 function toggleAudioBtn() {
-    if (!isPlay) {
-        audioToggleBtn.classList.remove('pause');
-    } else {
-        audioToggleBtn.classList.add('pause');
-    }
+  if (!isPlay) {
+    audioToggleBtn.classList.remove("pause");
+  } else {
+    audioToggleBtn.classList.add("pause");
+  }
 }
-audioToggleBtn.addEventListener('click', toggleAudioBtn);
+audioToggleBtn.addEventListener("click", toggleAudioBtn);
 
 function playNext() {
-    randomAudioNum += 1;
+  audioNum += 1;
 
-    if (randomAudioNum >= playList.length) {
-        randomAudioNum = 0;
-    }
-    isPlay = false;
-    playAudio();
+  if (audioNum >= playList.length) {
+    audioNum = 0;
+  }
+  isPlay = false;
+  playAudio();
 }
-playNextBtn.addEventListener('click', playNext);
-playNextBtn.addEventListener('click', toggleAudioBtn);
+playNextBtn.addEventListener("click", playNext);
+playNextBtn.addEventListener("click", toggleAudioBtn);
 
 function playPrev() {
-    randomAudioNum -= 1;
+  audioNum -= 1;
 
-    if (randomAudioNum < 0) {
-        randomAudioNum = playList.length - 1;
-    }
-    isPlay = false;
-    playAudio();
+  if (audioNum < 0) {
+    audioNum = playList.length - 1;
+  }
+  isPlay = false;
+  playAudio();
 }
-playPrevBtn.addEventListener('click', playPrev);
-playPrevBtn.addEventListener('click', toggleAudioBtn);
+playPrevBtn.addEventListener("click", playPrev);
+playPrevBtn.addEventListener("click", toggleAudioBtn);
 
-const playListContainer = document.querySelector('.play-list');
+const playListContainer = document.querySelector(".play-list");
 
-playList.forEach( (elem, index) => {
-    const li = document.createElement('li');
-    playListContainer.append(li);
-    li.classList.add('play-item');
-    li.textContent = playList[index].title;
-})
-
-
-
-
-
-
-
-
-
-
+playList.forEach((elem, index) => {
+  const li = document.createElement("li");
+  playListContainer.append(li);
+  li.classList.add("play-item");
+  li.textContent = playList[index].title;
+});
