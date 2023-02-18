@@ -27,7 +27,7 @@ const appTranslation = {
   },
   dayTimes: {
     ru: {
-      night: "ночного",
+      night: "ночного времени суток",
       morning: "утра",
       afternoon: "дня",
       evening: "вечера",

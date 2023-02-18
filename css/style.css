@@ -121,13 +121,15 @@ body {
 .languages {
   display: flex;
   gap: 20px;
-  background-color: #fff;
-  border-radius: 5px;
   padding: 10px;
+  font-size: 20px;
+  font-weight: 700;
+  background-color: transparent;
 }
 
 .languages-item {
-  color: cornflowerblue;
+  color: white;
+  cursor: pointer;
 }
 
 .languages-item-active {
